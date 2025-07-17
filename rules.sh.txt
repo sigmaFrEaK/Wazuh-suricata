@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Suricata Rule Downloader
+# Downloads all specified Emerging Threats rules
+# Run with sudo for system-wide installation
+
+RULES_DIR="/etc/suricata/rules"
+ET_URL="https://rules.emergingthreats.net/open/suricata/rules"
+
+# Create rules directory if it doesn't exist
+sudo mkdir -p "$RULES_DIR"
+
+# List of rules to download
+RULES=(
+    "botcc.portgrouped.rules"
+    "botcc.rules"
+    "ciarmy.rules"
+    "compromised.rules"
+    "drop.rules"
+    "dshield.rules"
+    "emerging-activex.rules"
+    "emerging-adware_pup.rules"
+    "emerging-attack_response.rules"
+    "emerging-chat.rules"
+    "emerging-coinminer.rules"
+    "emerging-current_events.rules"
+    "emerging-deleted.rules"
+    "emerging-dns.rules"
+    "emerging-dos.rules"
+    "emerging-exploit_kit.rules"
+    "emerging-exploit.rules"
+    "emerging-ftp.rules"
+    "emerging-games.rules"
+    "emerging-hunting.rules"
+    "emerging-icmp_info.rules"
+    "emerging-icmp.rules"
+    "emerging-imap.rules"
+    "emerging-inappropriate.rules"
+    "emerging-info.rules"
+    "emerging-ja3.rules"
+    "emerging-malware.rules"
+    "emerging-misc.rules"
+    "emerging-mobile_malware.rules"
+    "emerging-netbios.rules"
+    "emerging-p2p.rules"
+    "emerging-phishing.rules"
+    "emerging-policy.rules"
+    "emerging-pop3.rules"
+    "emerging-retired.rules"
+    "emerging-rpc.rules"
+    "emerging-scada.rules"
+    "emerging-scan.rules"
+    "emerging-shellcode.rules"
+    "emerging-smtp.rules"
+    "emerging-snmp.rules"
+    "emerging-sql.rules"
+    "emerging-telnet.rules"
+    "emerging-tftp.rules"
+    "emerging-user_agents.rules"
+    "emerging-voip.rules"
+    "emerging-web_client.rules"
+    "emerging-web_server.rules"
+    "emerging-web_specific_apps.rules"
+    "emerging-worm.rules"
+    "threatview_CS_c2.rules"
+    "tor.rules"
+)
+
+# Download each rule file
+for rule in "${RULES[@]}"; do
+    echo "Downloading $rule..."
+    sudo wget -q "$ET_URL/$rule" -O "$RULES_DIR/$rule"
+    
+    # Verify download was successful
+    if [ -s "$RULES_DIR/$rule" ]; then
+        echo "✓ Successfully downloaded $rule"
+    else
+        echo "✗ Failed to download $rule"
+        sudo rm -f "$RULES_DIR/$rule"
+    fi
+done
+
+# Set proper permissions
+sudo chown -R suricata:suricata "$RULES_DIR"
+sudo chmod -R 640 "$RULES_DIR"/*.rules
+
+# Update suricata.yaml to include these rules
+if ! grep -q "rule-files:" /etc/suricata/suricata.yaml; then
+    echo "Updating suricata.yaml configuration..."
+    sudo sed -i '/rule-files:/,/^$/d' /etc/suricata/suricata.yaml
+    sudo sh -c "echo 'rule-files:' >> /etc/suricata/suricata.yaml"
+    for rule in "${RULES[@]}"; do
+        sudo sh -c "echo '  - $rule' >> /etc/suricata/suricata.yaml"
+    done
+fi
+
+# Verify rule loading
+echo -e "\nTesting rule loading..."
+sudo suricata -T -c /etc/suricata/suricata.yaml -v
+
+# Restart Suricata to apply new rules
+echo -e "\nRestarting Suricata..."
+sudo systemctl restart suricata
+sudo systemctl status suricata --no-pager | head -n 10
+
+echo -e "\nAll rules downloaded and configured!"
+echo "Check alerts with: sudo tail -f /var/log/suricata/fast.log"
