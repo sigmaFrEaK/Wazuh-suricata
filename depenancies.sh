@@ -1,0 +1,32 @@
+sudo apt install -y \
+    build-essential \
+    libpcre3-dev \
+    libyaml-dev \
+    libpcap-dev \
+    libnet1-dev \
+    libnfnetlink-dev \
+    libjansson-dev \
+    libcap-ng-dev \
+    zlib1g-dev \
+    liblua5.1-dev \
+    libmagic-dev \
+    libnss3-dev \
+    libgeoip-dev \
+    libmaxminddb-dev \
+    rustc \
+    cargo \
+    autoconf \
+    automake \
+    libtool \
+    pkg-config \
+    tcpdump \
+    jq \
+    net-tools \
+    wget \
+    curl \
+    git \
+    python3-pip \
+    libhtp-dev \
+    libnetfilter-queue-dev \
+    libnspr4-dev \
+    libnss3-dev
