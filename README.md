@@ -160,7 +160,7 @@ sudo systemctl restart wazuh-agent
 
 **Deaa Alomari**  
 Cybersecurity Graduate | SOC Analyst in Progress  
-📫 [LinkedIn](https://www.linkedin.com/in/deaa-alomari-5680171aa?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app) *(insert your profile link)*  
+📫 [LinkedIn](https://www.linkedin.com/in/deaa-alomari-5680171aa?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app)
 
 ---
 
